@@ -17,6 +17,9 @@ from schemas.User import User
 # Cors
 from fastapi.middleware.cors import CORSMiddleware
 
+# Database
+from config.database import Base, engine
+
 # App
 app = FastAPI()
 
@@ -26,9 +29,12 @@ app.include_router(task_router)
 # Middleware
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
+# App
 app.title = 'Simple Task API with FastAPI'
 app.description = 'Simple Task API with FastAPI'
 app.version = '0.0.1'
+
+Base.metadata.create_all(bind=engine)
 
 @app.get('/api', tags=["Home"])
 def index():

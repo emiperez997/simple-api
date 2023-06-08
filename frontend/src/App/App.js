@@ -18,7 +18,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setTasks(data);
+        setTasks(data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -57,69 +57,74 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <div className="p-2">
-        <h1>Tasks</h1>
-        <hr />
-        <TaskCounter tasks={tasks} />
-      </div>
-      <div className="d-flex flex-row-reverse m-3">
-        <button className="btn btn-primary" onClick={handleOpenModal}>
-          {" "}
-          + Nueva Tarea{" "}
-        </button>
-      </div>
-      <div className="p-3">
-        <TaskList tasks={tasks} setTasks={setTasks} />
-      </div>
+    <div className="d-flex justify-content-center">
+      <div className="App" style={{ width: "700px" }}>
+        <div className="p-2">
+          <h1>Tasks</h1>
+          <hr />
+          <TaskCounter tasks={tasks} />
+        </div>
+        <div className="d-flex flex-row-reverse m-3">
+          <button className="btn btn-primary" onClick={handleOpenModal}>
+            {" "}
+            + Nueva Tarea{" "}
+          </button>
+        </div>
+        <div className="p-3">
+          <TaskList tasks={tasks} setTasks={setTasks} />
+        </div>
 
-      {!!openModal && (
-        <Modal>
-          <div className="bg-white card" style={{ width: "500px" }}>
-            <div className="text-end mx-auto justify-content-space d-flex p-3 card-header">
-              <h3>Nueva Tarea</h3>
-              <div className="pr-3"></div>
-            </div>
-            <div>
-              <form className="p-3">
-                <div className="mb-3">
-                  <label htmlFor="title" className="form-label">
-                    Titulo
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="title"
-                    placeholder="Titulo de la tarea"
-                  />
+        {!!openModal && (
+          <Modal>
+            <div className="bg-white card" style={{ width: "500px" }}>
+              <div className="text-end mx-auto justify-content-space d-flex p-3 card-header">
+                <h3>Nueva Tarea</h3>
+                <div className="pr-3"></div>
+              </div>
+              <div>
+                <form className="p-3">
+                  <div className="mb-3">
+                    <label htmlFor="title" className="form-label">
+                      Titulo
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="title"
+                      placeholder="Titulo de la tarea"
+                    />
 
-                  <label htmlFor="description" className="form-label">
-                    Descripcion
-                  </label>
-                  <textarea
-                    className="form-control"
-                    id="description"
-                    rows="3"
-                    placeholder="Descripcion de la tarea"
-                  ></textarea>
-                </div>
-              </form>
-            </div>
-            <div className="d-flex justify-content-between text-end p-3">
-              <button className="btn btn-primary text-end" onClick={createTask}>
-                Crear
-              </button>
+                    <label htmlFor="description" className="form-label">
+                      Descripcion
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="description"
+                      rows="3"
+                      placeholder="Descripcion de la tarea"
+                    ></textarea>
+                  </div>
+                </form>
+              </div>
+              <div className="d-flex justify-content-between text-end p-3">
+                <button
+                  className="btn btn-primary text-end"
+                  onClick={createTask}
+                >
+                  Crear
+                </button>
 
-              <button
-                className="btn btn-danger align-middle"
-                onClick={handleOpenModal}
-              >
-                Cerrar
-              </button>
+                <button
+                  className="btn btn-danger align-middle"
+                  onClick={handleOpenModal}
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
-          </div>
-        </Modal>
-      )}
+          </Modal>
+        )}
+      </div>
     </div>
   );
 }

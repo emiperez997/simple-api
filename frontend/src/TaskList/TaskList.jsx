@@ -10,7 +10,7 @@ function TaskList({ tasks, setTasks }) {
         console.log(data);
         const tasks = await fetch("http://localhost:5000/api/tasks")
           .then((res) => res.json())
-          .then((data) => data);
+          .then((data) => data.data);
         setTasks(tasks);
       })
       .catch((err) => console.log(err));
@@ -30,7 +30,7 @@ function TaskList({ tasks, setTasks }) {
           console.log(data);
           const tasks = await fetch("http://localhost:5000/api/tasks")
             .then((res) => res.json())
-            .then((data) => data);
+            .then((data) => data.data);
           setTasks(tasks);
         })
         .catch((err) => console.log(err));
@@ -45,7 +45,7 @@ function TaskList({ tasks, setTasks }) {
           console.log(data);
           const tasks = await fetch("http://localhost:5000/api/tasks")
             .then((res) => res.json())
-            .then((data) => data);
+            .then((data) => data.data);
           setTasks(tasks);
         })
         .catch((err) => console.log(err));
