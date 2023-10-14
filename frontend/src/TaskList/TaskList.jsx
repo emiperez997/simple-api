@@ -1,16 +1,16 @@
 import TaskItem from "../TaskItem/TaskItem";
 
-function TaskList({ tasks, setTasks }) {
+function TaskList({ tasks, setTasks, setTaskDone }) {
   const onDelete = (id) => {
-    fetch(`http://localhost:5000/api/task/${id}`, {
+    fetch(`http://localhost:5001/api/task/${id}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
       .then(async (data) => {
         console.log(data);
-        const tasks = await fetch("http://localhost:5000/api/tasks")
+        const tasks = await fetch("http://localhost:5001/api/tasks")
           .then((res) => res.json())
-          .then((data) => data.data);
+          .then((data) => data);
         setTasks(tasks);
       })
       .catch((err) => console.log(err));
@@ -20,7 +20,7 @@ function TaskList({ tasks, setTasks }) {
     const task = tasks.find((task) => task.id === id);
 
     if (task.done) {
-      fetch(`http://localhost:5000/api/task/undone/${id}`, {
+      fetch(`http://localhost:5001/api/task/undone/${id}`, {
         header: {
           ContentType: "application/json",
         },
@@ -28,14 +28,15 @@ function TaskList({ tasks, setTasks }) {
         .then((res) => res.json())
         .then(async (data) => {
           console.log(data);
-          const tasks = await fetch("http://localhost:5000/api/tasks")
+          const tasks = await fetch("http://localhost:5001/api/tasks")
             .then((res) => res.json())
-            .then((data) => data.data);
+            .then((data) => data);
           setTasks(tasks);
+          setTaskDone(tasks.every((task) => task.done === true));
         })
         .catch((err) => console.log(err));
     } else {
-      fetch(`http://localhost:5000/api/task/done/${id}`, {
+      fetch(`http://localhost:5001/api/task/done/${id}`, {
         header: {
           ContentType: "application/json",
         },
@@ -43,10 +44,11 @@ function TaskList({ tasks, setTasks }) {
         .then((res) => res.json())
         .then(async (data) => {
           console.log(data);
-          const tasks = await fetch("http://localhost:5000/api/tasks")
+          const tasks = await fetch("http://localhost:5001/api/tasks")
             .then((res) => res.json())
-            .then((data) => data.data);
+            .then((data) => data);
           setTasks(tasks);
+          setTaskDone(tasks.every((task) => task.done === true));
         })
         .catch((err) => console.log(err));
     }
@@ -65,6 +67,7 @@ function TaskList({ tasks, setTasks }) {
           onDelete={onDelete}
           setTasks={setTasks}
           tasks={tasks}
+          setTaskDone={setTaskDone}
         />
       ))}
     </ul>

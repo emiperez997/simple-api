@@ -1,9 +1,9 @@
-import "../Modal/Modal.css";
+import "./EditModal.css";
 import ReactDOM from "react-dom";
 
 function EditModal({ children }) {
   return ReactDOM.createPortal(
-    <div className="ModalBackground">{children}</div>,
+    <div className="EditModalBg">{children}</div>,
     document.getElementById("modal")
   );
 }

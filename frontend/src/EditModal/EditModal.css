@@ -1,0 +1,14 @@
+.EditModalBg {
+  background-color: rgba(12, 47, 19, 0.329);
+  position: fixed;
+  z-index: 1;
+  width: 100vw; 
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}

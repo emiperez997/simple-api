@@ -4,67 +4,74 @@ class TaskService():
     def __init__(self, db) -> None:
         self.db = db
 
-    def _get_all(self):
-        return self.db.query(TaskModel).all()
-
-    def _get_one(self, id):
-        return self.db.query(TaskModel).filter(TaskModel.id == id).first()
-
     def get_tasks(self):
-        result = self.db.query(TaskModel).all()
-        return result
+        tasks = self.db.query(TaskModel).all()
+        return tasks
 
     def get_done_task(self, id: int):
         task = self.db.query(TaskModel).filter(TaskModel.id == id).first()
         if task:
             if task.done:
-                return {'error': 'Task already done'}
+                return False
             else:
                 task.done = True
                 self.db.commit()
-                return {'info': 'Task done', 'task': self._get_one(id)}
+                return True
 
-        return {'error': 'Task not found'}
+        return None
 
     def get_undone_task(self, id: int):
         task = self.db.query(TaskModel).filter(TaskModel.id == id).first()
         if task:
             if not task.done:
-                return {'error': 'Task already done'}
+                return False
             else:
                 task.done = False
                 self.db.commit()
-                return {'info': 'Task done', 'task': self._get_one(id)}
+                return True
 
-        return {'error': 'Task not found'}
+        return None
+      
+    def get_all_done(self):
+        tasks_undone = self.db.query(TaskModel).filter(TaskModel.done == False).all()
+
+        if tasks_undone:
+            for task in tasks_undone:
+                task.done = True
+            self.db.commit()
+            return self.get_tasks()
+
+        return None
+
+
 
     def get_task(self, id):
         task = self.db.query(TaskModel).filter(TaskModel.id == id).first()
-        return {'info': 'Success', 'data': task} if task else {'error': 'Task not found'}
+        return task
 
 
     def create_task(self, task):
-        new_task = TaskModel(**task.dict())
-        self.db.add(new_task)
+        self.db.add(task)
         self.db.commit()
-        return {'info': 'Task created', 'data': self._get_all()}
+        return task
 
-    def update_task(self, id, task):
-        taskDB = self._get_one(id)
-        if task:
+    def update_task(self, id, task):    
+        taskDB = self.get_task(id)
+        if taskDB:
             taskDB.title = task.title
             taskDB.description = task.description
             taskDB.done = task.done
             self.db.commit()
-            return {'info': 'Task updated', 'data': self._get_one(id)}
+            return self.get_task(id)
         else:
-            return {'error': 'Task not found'}
+            return None
+ 
 
     def delete_task(self, id):
-        task = self._get_one(id)
+        task = self.get_task(id)
         if task:
             self.db.delete(task)
             self.db.commit()
-            return {'info': 'Task deleted', 'data': self._get_all()}
+            return self.get_tasks()
         else:
-            return {'error': 'Task not found'}
+            return None

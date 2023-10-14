@@ -12,6 +12,7 @@ function TaskItem({
   onDelete,
   setTasks,
   tasks,
+  setTaskDone,
 }) {
   const [openModal, setOpenModal] = useState(false);
 
@@ -30,7 +31,7 @@ function TaskItem({
 
     console.log(task);
 
-    fetch(`http://localhost:5000/api/task/${id}`, {
+    fetch(`http://localhost:5001/api/task/${id}`, {
       method: "PUT",
       body: JSON.stringify(task),
       headers: {
@@ -40,11 +41,12 @@ function TaskItem({
       .then((response) => response.json())
       .then(async (data) => {
         console.log(data);
-        const tasks = await fetch("http://localhost:5000/api/tasks")
+        const tasks = await fetch("http://localhost:5001/api/tasks")
           .then((res) => res.json())
-          .then((data) => data.data);
+          .then((data) => data);
         setTasks(tasks);
         handleOpenModal();
+        setTaskDone(tasks.every((task) => task.done === true));
       })
       .catch((error) => {
         console.log(error);
@@ -53,36 +55,40 @@ function TaskItem({
 
   return (
     <li
-      className={`list-group-item list-group-item-action flex-column align-items-start ${
+      className={`list-group-item list-group-item-action justify-content-between align-items-stretch d-flex flex-row ${
         done ? "list-group-item-dark" : "list-group-item-light"
       }`}
       key={id}
     >
-      <div className="d-flex w-100 justify-content-between">
+      <div className="w-50">
         <h5 className={`mb-1`}>{title}</h5>
+        {/* <small>{createdAt}</small> */}
+
+        <p className={`mb-1`}>{description}</p>
         <small>
           <i
             className="p-2 fs-5 text-success bi bi-pencil-square"
             onClick={handleOpenModal}
           ></i>
         </small>
-        {/* <small>{createdAt}</small> */}
+        <small>
+          <i
+            onClick={() => onDelete(id)}
+            className="p-2 fs-5 text-danger bi bi-trash-fill pe-auto"
+          ></i>
+        </small>
       </div>
-      <p className={`mb-1`}>{description}</p>
-      <small>
-        <i
-          onClick={() => checkTask(id)}
-          className={`p-2 text-success fs-5 bi ${
-            done ? "bi-check-circle-fill" : "bi-check-circle"
-          }`}
-        ></i>
-      </small>
-      <small>
-        <i
-          onClick={() => onDelete(id)}
-          className="p-2 fs-5 text-danger bi bi-trash-fill pe-auto"
-        ></i>
-      </small>
+
+      <div className="align-middle p-2">
+        <small className="mt-5">
+          <i
+            onClick={() => checkTask(id)}
+            className={`text-success fs-1 bi ${
+              done ? "bi-check-circle-fill" : "bi-check-circle"
+            }`}
+          ></i>
+        </small>
+      </div>
 
       {/* Modal Edit  */}
       {!!openModal && (

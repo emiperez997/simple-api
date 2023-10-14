@@ -1,8 +1,7 @@
 .ModalBackground {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(13, 20, 81, 0.527);
   position: fixed;
-  width: 100vw;
-  
+  width: 100vw; 
   top: -10px;
   left: -10px;
   right: -10px;

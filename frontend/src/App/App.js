@@ -7,6 +7,7 @@ import "./App.css";
 function App() {
   const [tasks, setTasks] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [taskDone, setTaskDone] = useState(false);
 
   const handleOpenModal = () => {
     setOpenModal(!openModal);
@@ -14,11 +15,12 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/tasks")
+    fetch("http://localhost:5001/api/tasks")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setTasks(data.data);
+        setTasks(data);
+        setTaskDone(data.every((task) => task.done === true));
       })
       .catch((error) => {
         console.log(error);
@@ -29,6 +31,23 @@ function App() {
   useEffect(() => {
     console.log("tasks updated");
   }, [tasks]);
+
+  const getAllTaskDone = () => {
+    fetch("http://localhost:5001/api/tasks/done", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then(async (data) => {
+        const tasks = await fetch("http://localhost:5001/api/tasks")
+          .then((res) => res.json())
+          .then((data) => data);
+        setTasks(tasks);
+        setTaskDone(tasks.every((task) => task.done === true));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const createTask = () => {
     const title = document.getElementById("title").value;
@@ -41,7 +60,7 @@ function App() {
 
     console.log(task);
 
-    fetch("http://localhost:5000/api/task", {
+    fetch("http://localhost:5001/api/task", {
       method: "POST",
       body: JSON.stringify(task),
       headers: {
@@ -54,6 +73,7 @@ function App() {
       });
     setTasks([...tasks, task]);
     setOpenModal(!openModal);
+    setTaskDone(tasks.every((task) => task.done === true));
   };
 
   return (
@@ -64,14 +84,30 @@ function App() {
           <hr />
           <TaskCounter tasks={tasks} />
         </div>
-        <div className="d-flex flex-row-reverse m-3">
-          <button className="btn btn-primary" onClick={handleOpenModal}>
-            {" "}
-            + Nueva Tarea{" "}
-          </button>
+        <div className=" d-flex justify-content-between m-3">
+          <div>
+            <button
+              className="btn btn-success"
+              {...(taskDone ? { disabled: true } : null)}
+              onClick={getAllTaskDone}
+            >
+              Hacer todas
+            </button>
+          </div>
+
+          <div>
+            <button className="btn btn-primary" onClick={handleOpenModal}>
+              {" "}
+              + Nueva Tarea{" "}
+            </button>
+          </div>
         </div>
         <div className="p-3">
-          <TaskList tasks={tasks} setTasks={setTasks} />
+          <TaskList
+            tasks={tasks}
+            setTasks={setTasks}
+            setTaskDone={setTaskDone}
+          />
         </div>
 
         {!!openModal && (
